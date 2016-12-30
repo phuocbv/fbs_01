@@ -1,3 +1,6 @@
+<div class="reviene">
+    @lang('seller.reviene'): {{ number_format(MyFuncs::getSumMoney($orderedProducts)) }} @lang('user.cart.vnd')
+</div>
 <table class="table table-striped table-bordered table-hover" id="dataTables-example">
     <thead>
         <tr>
