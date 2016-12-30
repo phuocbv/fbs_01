@@ -49,4 +49,14 @@ class MyFuncs
 
         return round($priceProduct, -3);
     }
+
+    public static function getSumMoney($orderedProducts)
+    {
+        $sum = 0;
+        foreach ($orderedProducts as $key => $value) {
+            $sum += $value->product->price * (1 - $value->product->discount / 100) * $value->quantity_item;
+        }
+
+        return $sum;
+    }
 }

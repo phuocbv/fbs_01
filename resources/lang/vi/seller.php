@@ -17,4 +17,5 @@ return [
     'out-off' => 'Hết hàng',
     'my-shop' => 'Shop của tôi',
     'product-in-shop' => 'Sản phẩm trong shop',
+    'reviene' => 'TỔNG DOANH THU',
 ];
