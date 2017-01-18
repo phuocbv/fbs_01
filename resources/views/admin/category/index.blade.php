@@ -1,5 +1,9 @@
 @extends("layouts.admin.app")
 
+@section("title")
+    @lang('admin.manage_category')
+@endsection
+
 @section("content")
 <div id="page-wrapper">
     <div class="container-fluid">
@@ -30,18 +34,18 @@
                         @foreach ($categories as $key => $category)
                             <tr class="odd gradeX" align="center">
                                 <td>{!! $key + 1 !!}</td>
-                                <td><a href="#">{!! $category->name !!}</a></td>
-                                <td>{!! $category->sort !!}</td>
+                                <td class="name">{!! $category->name !!}</td>
+                                <td class="sort">{!! $category->sort !!}</td>
                                 <td class="center" width="10%">
-                                    <i class="fa fa-pencil fa-fw"></i>
+                                    <i class="fa fa-pencil fa-fw edit" data-id="{{ $category->id }}"></i>
                                 </td>
                                 <td class="center" width="10%">
                                     <i class="fa fa-trash"></i>
                                 </td>
                                 @if ($category->parent)
-                                <td width="10%">
-                                    {{ $category->parent->name }}
-                                </td>
+                                    <td width="10%" class="parent">
+                                        {{ $category->parent->name }}
+                                    </td>
                                 @else
                                     <td></td>
                                 @endif
@@ -56,19 +60,32 @@
     </div>
 </div>
 
-<div class="modal fade bs-example-modal-sm"
-    tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
+<div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">@lang('admin.edit-category')</h4>
+            </div>
+            <div class="modal-form"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">@lang('admin.close')</button>
+                <button type="button" class="btn btn-primary" id="btnEdit">@lang('admin.save')</button>
+            </div>
         </div>
     </div>
 </div>
 @stop
 
 @section('script')
-    <script src="{{ asset('/js/dttable.js') }}"></script>
+    <script src="{{ asset('bower_components/blockUI/jquery.blockUI.js') }}"></script>
+    <script src="{{ asset('admin/js/category.js') }}"></script>
     <script>
-        var dttable = new dttable();
-        dttable.init('#dataTables-example');
+        var category = new category();
+        $(function() {
+            category.init({
+                imageAwait: '{{ asset('/images/load.gif') }}'
+            });
+        });
     </script>
 @endsection

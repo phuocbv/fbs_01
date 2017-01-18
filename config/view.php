@@ -43,4 +43,5 @@ return [
     'similar-product' => 6,
     'number-shop' => 8,
     'status' => ['status', 'on-sell', 'out-off'],
+    'soft' => [0, 1, 2, 3, 4],
 ];
