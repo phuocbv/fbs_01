@@ -25,11 +25,14 @@ class CategoryController extends Controller
        $this->categoryValidator = $categoryValidator;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $categories = $this->categoryRepository->all();
+        $data['categories'] = $this->categoryRepository->paginate(config('view.panigate-10'));
+        if ($request->ajax()) {
+            return response()->json(view('admin.category.listCategories', $data)->render());
+        }
 
-        return view('admin.category.index', compact('categories'));
+        return view('admin.category.index', $data);
     }
 
     public function create()

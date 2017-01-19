@@ -28,20 +28,33 @@ var category = function() {
 
     this.addEvent = function() {
         var current = this;
-        $('.fa.fa-pencil.fa-fw.edit').on('click', function(event) {
+        $(window).on('hashchange', function() {
+            if (window.location.hash) {
+                var page = window.location.hash.replace('#', '');
+                if (page == Number.NaN || page <= 0) {
+                    return false;
+                } else {
+                    current.getListCategories(page);
+                }
+            }
+        });
+        $(document).on('click', '.fa.fa-pencil.fa-fw.edit', function (e) {
             $.blockUI({ message: '<img src="' + current.data.imageAwait + '"/>' });
             current.data.categoryId = $(this).data('id');
             current.editCategory($(this).data('id'));
             current.element.elementSelected = this;
         });
-
-        $('#btnEdit').on('click', function(event) {
+        $(document).on('click', '#btnEdit', function (e) {
             current.dataEditCategory.name = $('#category-name').val();
             current.dataEditCategory.sort = $('#sort').val();
             current.dataEditCategory.parent_id = $('#parent_id').val();
             current.data.parentName =  $('#parent_id :selected').text();
             current.update(current.dataEditCategory, current.data.categoryId,
                 current.inform, current.element.elementSelected);
+        });
+        $(document).on('click', '.pagination a', function (e) {
+            current.getListCategories($(this).attr('href').split('page=')[1]);
+            e.preventDefault();
         });
     }
 
@@ -53,7 +66,7 @@ var category = function() {
         .done(function(data) {
             $('.modal#modalEdit .modal-content .modal-form').html(data);
             $.unblockUI();
-            $('.modal#modalEdit').modal();
+            $('.modal#modalEdit').modal('show');
         });        
     }
 
@@ -88,5 +101,17 @@ var category = function() {
                 alert(str);
                 break;
         }
+    }
+
+    this.getListCategories = function(page) {
+        $.ajax({
+            url : '?page=' + page,
+            dataType: 'json',
+        }).done(function (data) {
+            $('.listCategories').html(data);
+            location.hash = page;
+        }).fail(function () {
+            alert('Posts could not be loaded.');
+        });
     }
 }

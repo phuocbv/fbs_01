@@ -1,18 +1,9 @@
 var addcart = function() {
-    this.init = function(selector) {
+    this.init = function() {
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             }
-        });
-        this.addEvent(selector);       
-    }
-
-    this.addEvent = function(selector) {
-        var current = this;
-        $('.cart').on('click', selector, function(event) {
-            event.preventDefault();
-            current.addToCart($(this).attr('product-id'));
         });
     }
 

@@ -13,8 +13,10 @@
 
 Route::get('/', ['as' => 'home', 'uses' => 'HomeController@index']);
 
+// Route::get('/categories/{id}/products', ['as' => 'category.show',
+//     'uses' => 'CategoriesControllers@showProductInCategory']);
 Route::get('/categories/{id}/products', ['as' => 'category.show',
-    'uses' => 'CategoriesControllers@showProductInCategory']);
+    'uses' => 'CategoriesControllers@searchProductInCategory']);
 
 Route::get('/searchProduct', ['as' => 'searchProduct',
     'uses' => 'HomeController@searchProduct']);
