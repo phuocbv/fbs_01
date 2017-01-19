@@ -39,6 +39,10 @@
     background: #fff;
 }
 
+.btn {
+    border-radius: 0px;
+}
+
 .button {
     background-color: #4CAF50;
     border: none;
