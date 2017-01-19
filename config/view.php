@@ -40,6 +40,8 @@ return [
     'no' => 'No',
     'take-category' => 9,
     'take-product' => 8,
+    'panigate-10' => 10,
+    'panigate-24' => 24,
     'similar-product' => 6,
     'number-shop' => 8,
     'status' => ['status', 'on-sell', 'out-off'],

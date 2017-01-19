@@ -10,17 +10,19 @@ var category = function() {
         to: null,
     }
 
+    this.addCart = null;
+
     this.init = function(data) {
         var current = this;
         this.data.parent_id = data.parent_id;
         this.data.category_id = data.category_id;
+        this.addCart = data.addCart;
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
             }
         });
         $('.metismenu').metisMenu();
-        current.paginate();
         current.hoverBlockProduct();
         if (current.data.parent_id == null) {
             var category_current = "#category_" + current.data.category_id;
@@ -56,8 +58,12 @@ var category = function() {
             current.searchProduct(current.data.category_id, current.dataSearch,
                 current.loadProduct, current);
         });
-        $('div.easyPaginateNav a').on('click', function() {
-            current.hoverBlockProduct();
+        $(document).on('click', '.pagination a', function (e) {
+            current.getListCategories($(this).attr('href').split('page=')[1], current.hoverBlockProduct);
+            e.preventDefault();
+        });
+        $(document).on('click', '.btn-add-cart', function (e) {
+            current.addCart.addToCart($(this).attr('product-id'));
         });
     }
 
@@ -79,14 +85,6 @@ var category = function() {
         current.paginate();
     }
 
-    this.paginate = function() {
-        $('#list-product').easyPaginate({
-            paginateElement: 'div.block-product-category',
-            elementsPerPage: 24,
-            effect: 'climb'
-        });
-    }
-
     this.hoverBlockProduct = function() {
         $('.block-product-category').hover(
             function() {
@@ -95,5 +93,18 @@ var category = function() {
                 $(this).css('z-index', 0);
             }
         );
+    }
+
+    this.getListCategories = function(page, callback) {
+        $.ajax({
+            url : '?page=' + page,
+            dataType: 'json',
+        }).done(function (data) {
+            $('.list-product-in-category').html(data);
+            location.hash = page;
+            callback();
+        }).fail(function () {
+            alert('Posts could not be loaded.');
+        });
     }
 }

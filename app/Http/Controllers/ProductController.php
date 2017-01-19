@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Pagination\Paginator;
 use App\Repositories\Contracts\ProductRepositoryInterface as ProductInterface;
 use App\Repositories\Contracts\RateRepositoryInterface as RateInterface;
 use App\Repositories\Contracts\FollowRepositoryInterface as FollowInterface;
 use App\Repositories\Contracts\ImageRepositoryInterface as ImageInterface;
+use App\Repositories\Contracts\CategoryRepositoryInterface as CategoryInterface;
 use App\Repositories\Contracts\ProductCollectionRepositoryInterface as ProductCollectionInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Exception;
@@ -23,6 +25,7 @@ class ProductController extends Controller
     private $productCollectionRepository;
     private $followRepository;
     private $imageRepository;
+    private $categoryRepository;
 
     protected $productCollectionValidator;
     protected $productValidator;
@@ -34,7 +37,8 @@ class ProductController extends Controller
         ProductCollectionInterface $productCollectionInterface,
         ProductCollectionValidator $productCollectionValidator,
         ProductValidator $productValidator,
-        ImageInterface $imageInterface)
+        ImageInterface $imageInterface,
+        CategoryInterface $categoryInterface)
     {
         $this->productRepository = $productInterface;
         $this->rateRepository = $rateInterface;
@@ -43,6 +47,7 @@ class ProductController extends Controller
         $this->productCollectionValidator = $productCollectionValidator;
         $this->productValidator = $productValidator;
         $this->imageRepository = $imageInterface;
+        $this->categoryRepository = $categoryInterface;
     }
 
     public function show($id)
