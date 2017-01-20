@@ -76,6 +76,9 @@ Route::group(['prefix' => 'user', 'namespace' => 'User', 'middleware' => 'auth',
     Route::get('/myProducts', ['as' => 'user.myProducts', 
         'uses' => 'ShopController@showShopOfUser']);
 
+    Route::get('/myCollection', ['as' => 'user.myCollection',
+        'uses' => 'CollectionController@myCollection']);
+
     Route::resource('cart', 'CartController', [ 'only' => [
         'index', 'store'
     ]]);

@@ -8,6 +8,8 @@ use App\Repositories\Contracts\CollectionRepositoryInterface as CollectionReposi
 use App\Repositories\Contracts\ShopRepositoryInterface as ShopRepositoryInterface;
 use App\Repositories\Contracts\ProductCollectionRepositoryInterface as ProductCollectionInterface;
 use App\ProductCollectionValidator;
+use App\CollectionValidator;
+use Illuminate\Support\Facades\DB;
 use Prettus\Validator\Exceptions\ValidatorException;
 use Prettus\Validator\Contracts\ValidatorInterface;
 
@@ -20,18 +22,21 @@ class CollectionController extends Controller
     private $shopRepository;
     private $productCollectionRepository;
     protected $productCollectionValidator;
+    protected $collectionValidator;
 
     public function __construct(
         ShopRepositoryInterface $shopRepository,
         CollectionRepositoryInterface $collectionRepository,
         ProductCollectionInterface $productCollectionInterface,
-        ProductCollectionValidator $productCollectionValidator
+        ProductCollectionValidator $productCollectionValidator,
+        CollectionValidator $collectionValidator
     )
     {
         $this->shopRepository = $shopRepository;
         $this->collectionRepository = $collectionRepository;
         $this->productCollectionRepository = $productCollectionInterface;
         $this->productCollectionValidator = $productCollectionValidator;
+        $this->collectionValidator = $collectionValidator;
     }
 
     public function index()
@@ -50,20 +55,31 @@ class CollectionController extends Controller
     {
         $data = $request->only('name');
         if (!Auth::user()->shop()) {
-            return redirect()->to('/');
-        }
-
+            return response()->json(['status' => 'no-shop']);
+        }   
         $data['shop_id'] = Auth::user()->shop->id;
-        if ($this->collectionRepository->validate($data, 'create')) {
-            $this->collectionRepository->create($data);
+        try {
+            if ($this->collectionValidator->with($data)->passesOrFail(ValidatorInterface::RULE_CREATE)) {
+                DB::beginTransaction();
+                $result = $this->collectionRepository->create($data);
+                if ($result) {
+                    DB::commit();
 
-            return redirect()->route('user.collection.index')->with([
-                'flash_level' => Lang::get('admin.success'),
-                'flash_message' => Lang::get('admin.message.add_success', ['name' => 'Collection'])
+                    return response()->json(['status' => 'success', 'data' => $result]);
+                }
+                DB::rollback();
+            }
+        } catch (ValidatorException $e) {
+            return response()->json([
+                'status' => 'validator',
+                'message' => $e->getMessageBag()
             ]);
+            DB::rollback();
+        } catch (Exception $e) {
+            DB::rollback();
         }
 
-        return redirect()->back()->withErrors($this->collectionRepository->valid());
+        return response()->json(['status' => 'error']);
     }
 
     public function postUpdateAjax(Request $request)
@@ -130,5 +146,12 @@ class CollectionController extends Controller
         }
         
         return Lang::get('remove-error');
+    }
+
+    public function myCollection()
+    {
+        $data['collections'] = $this->collectionRepository->findByField('shop_id', Auth::user()->shop->id);
+
+        return view('seller-chanel.myCollection', $data);
     }
 }
