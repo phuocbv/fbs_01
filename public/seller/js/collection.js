@@ -3,7 +3,14 @@ var collection = function() {
         name: null,
     }
 
-    this.init = function() {
+    this.dataPage = {
+        items: null,
+        itemsOnPage: null,
+    }
+
+    this.init = function(data) {
+        this.dataPage.items = data.items;
+        this.dataPage.itemsOnPage = data.itemsOnPage;
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -22,6 +29,16 @@ var collection = function() {
                 alert('Empty');
             }
         });
+        $('.paginate').pagination({
+            items: current.dataPage.items,
+            itemsOnPage: current.dataPage.itemsOnPage,
+            cssStyle: 'light-theme',
+            hrefTextPrefix: 'javascript:void(',
+            hrefTextSuffix: ')',
+            onPageClick: function(pageNumber) {
+                current.loadCollection(pageNumber);
+            }
+        });
     }
 
     this.addMyCollection = function(data, callback) {
@@ -32,6 +49,20 @@ var collection = function() {
         })
         .done(function(data) {
             callback(data, '');
+        })
+        .fail(function() {
+            alert('error');
+        });
+    }
+
+    this.loadCollection = function(pageNumber) {
+        $.ajax({
+            url: '/user/myCollection',
+            type: 'GET',
+            data: { page: pageNumber },
+        })
+        .done(function(data) {
+            $('.item-collection').html(data);
         })
         .fail(function() {
             alert('error');
