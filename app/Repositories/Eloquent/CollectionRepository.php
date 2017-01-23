@@ -34,4 +34,17 @@ class CollectionRepository extends BaseRepository implements CollectionRepositor
 
         return null;
     }
+
+    public function getMyCollections($shop_id, $currentPage, $limit)
+    {
+        $data['sum'] = $this->model->where('shop_id', $shop_id)->get();
+        if (count($data['sum']) > 0) {
+            $data['collections'] = $this->model->where('shop_id', $shop_id)->offset($currentPage * $limit)
+                ->limit($limit)->get();
+        } else {
+            $data['collections'] = null;
+        }
+
+        return $data;
+    }
 }

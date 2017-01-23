@@ -1,6 +1,6 @@
 <div class='container'>
-    <div class="head-top col-md-12 col-sm-12 col-xs-12">
-        <div class="col-md-8 col-sm-8 col-xs-8">
+    <div class="head-top col-md-12 col-sm-12 col-xs-12 row">
+        <div class="col-md-8 col-sm-8 col-xs-8 row">
             <a href="{{ route('home') }}" class="img-responsive">
                 <img src="{{ asset('images/logo.png') }}">
             </a>

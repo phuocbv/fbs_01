@@ -1,5 +1,9 @@
 @extends('layouts.seller.app')
 
+@section('title')
+    @lang('collection.my-collection')
+@endsection
+
 @section('content')
 <link rel="stylesheet" href="{{ asset('user/css/collection.css') }}">
 <div class="container">
@@ -17,7 +21,7 @@
         <input type="button" class="button btn-add-product" value="@lang('collection.add-collection')"
             data-toggle="modal" data-target="#addCollection">
     </div>   
-    <div>
+    <div class="row">
         @if (count($collections))
             <table class="table table-striped table-bordered table-hover" id="dataTables-example">
                 <thead>
@@ -29,30 +33,14 @@
                         <th class="colum" width="10%">@lang('user.delete')</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @foreach($collections as $key => $collection)
-                        <tr>
-                            <td class="colum">{!! $key + 1 !!}</td>
-                            <td class="colum"><a href="{{ route('user.collection.show', $collection) }}" id="collection-{{ $collection->id }}">{!! $collection->name !!}</a></td>
-                            <td class="colum">{{ count($collection->products) }}</td>
-                            <td class="colum"><i class="fa fa-pencil fa-fw"></i>
-                                <a href="javascript:void(0)" data-toggle="modal" data-target=".bs-example-modal-lg" data-id="{{ $collection->id }}" data-name="" class="update">
-                                    @lang('user.edit')
-                                </a>
-                            </td>
-                            <td class="colum"><i class="fa fa-trash-o fa-fw"></i>
-                                <a href="javascript:void(0)" 
-                                    data-id="{!! $collection->id !!}" 
-                                    value="{!! $collection->id !!}" 
-                                    class="delete">
-                                    @lang('user.delete')
-                                </a>
-                            </td>
-                        </tr>
-                    @endforeach
+                <tbody class="item-collection">
+                    @include('seller-chanel.itemCollection')
                 </tbody>
             </table>
-        @endif 
+            <div class="paginate"></div>
+        @else
+            @lang('collection.have-not-collection')
+        @endif
     </div>
 
     <div class="modal fade" id="addCollection" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -80,12 +68,12 @@
     </div>
 </div>
 <script src="{{ asset('/bower_components/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-<script type="text/javascript" src="{!! asset('seller/js/collection.js') !!}"></script>
-<script src="{{ asset('/js/dttable.js') }}"></script>
+<script src="{!! asset('seller/js/collection.js') !!}"></script>
 <script type="text/javascript">
-    var dttable = new dttable();
-    dttable.init('#dataTables-example');
     var collection = new collection;
-    collection.init();
+    collection.init({
+        items: {{ count($sum) }},
+        itemsOnPage: {{ config('view.panigate-10') }},
+    });
 </script>
 @stop

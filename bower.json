@@ -31,6 +31,7 @@
     "datatables.net-dt": "^1.10.13",
     "parsleyjs": "^2.6.0",
     "stripe.js": "https://js.stripe.com/v2/",
-    "blockUI": "*"
+    "blockUI": "*",
+    "simplePagination.js": "jquery.simplePagination#*"
   }
 }

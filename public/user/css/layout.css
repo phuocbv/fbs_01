@@ -220,6 +220,10 @@
     border-bottom-right-radius: 0;
 }
 
+input.form-control, select.form-control, textarea.form-control {
+    border-radius: 0px !important;
+}
+
 img.img-title {
     margin-top: 4px;
     height: 140px;
@@ -246,6 +250,10 @@ img.img-title {
 .label.label-success.title-image .glyphicon.glyphicon-remove {
     cursor: pointer;
     padding-left: 15px;
+}
+
+.light-theme.simple-pagination ul li span, .light-theme.simple-pagination ul li a {
+    border-radius: 0px !important;
 }
 
 div.cate div.submenu {

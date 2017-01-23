@@ -148,9 +148,20 @@ class CollectionController extends Controller
         return Lang::get('remove-error');
     }
 
-    public function myCollection()
+    public function myCollection(Request $request)
     {
-        $data['collections'] = $this->collectionRepository->findByField('shop_id', Auth::user()->shop->id);
+        $param = $request->only('page');
+        if ($param['page']) {
+            $page = $param['page'];
+        } else {
+            $page = 1;
+        }
+        $data = $this->collectionRepository
+            ->getMyCollections(Auth::user()->shop->id, ($page - 1), config('view.panigate-10'));
+        $data['page'] = $param['page'];
+        if ($request->ajax()) {
+            return response()->json(view('seller-chanel.itemCollection', $data)->render());
+        }
 
         return view('seller-chanel.myCollection', $data);
     }
