@@ -38,8 +38,18 @@ class HomeController extends Controller
 
     public function searchProduct(Request $request)
     {
-        $data['products'] = $this->productRepository->searchProductByName($request->only('search')['search'])->get();
+        $param = $request->only('page', 'search');
+        if ($param['page']) {
+            $page = $param['page'];
+        } else {
+            $page = 1;
+        }
+        $data = $this->productRepository
+            ->searchProductByName($param['search'], ($page - 1), config('view.panigate-24'));
         $data['categories'] = $this->categoryRepository->getCategory(config('view.take-category'));
+        if ($request->ajax()) {
+            return response()->json(view('itemProducts', $data)->render());
+        }
 
         return view('searchProduct', $data);
     }

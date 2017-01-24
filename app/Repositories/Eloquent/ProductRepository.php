@@ -14,15 +14,23 @@ class ProductRepository extends BaseRepository implements ProductRepositoryInter
         return Product::class;
     }
 
-    public function searchProductByName($name)
+    public function searchProductByName($name, $currentPage, $limit)
     {
-        return $this->model->where('name', 'like', '%' . $name . '%');
+        $products = $this->model->where('name', 'like', '%' . $name . '%')->orderBy('created_at', 'desc');
+        $data['sum'] = count($products->get());
+        if ($data['sum'] > 0) {
+            $data['products'] = $products->offset($currentPage * $limit)->limit($limit)->get();
+        } else {
+            $data['products'] = null;
+        }
+
+        return $data;
     }
 
-    public function getSimilarProduct(Product $product, $take)
+    public function getSimilarProduct(Product $product, $limit)
     {
         return $this->model->where('category_id', $product->category_id)
             ->where('id', '<>', $product->id)
-            ->orderBy('created_at', 'desc')->limit($take);
+            ->orderBy('created_at', 'desc')->limit($limit);
     }
 }

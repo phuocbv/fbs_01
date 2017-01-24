@@ -69,6 +69,10 @@
     border-radius: 0;
 }
 
+.paginate.light-theme.simple-pagination {
+    padding-top: 15px;
+}
+
 .search .button.btn-search-product {
     width: 100%;
     height: 40px;
