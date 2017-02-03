@@ -29,5 +29,14 @@ return [
     */
 
     'compiled' => realpath(storage_path('framework/views')),
+    'paginate' => 5,
+    
+    'number' => [
+        'zero' => 0,
+        'one' => 1
+    ],
 
+    'yes' => 'Yes',
+    'no' => 'No',
+    'take-category' => 9,
 ];
