@@ -39,4 +39,8 @@ return [
     'yes' => 'Yes',
     'no' => 'No',
     'take-category' => 9,
+    'take-product' => 8,
+    'similar-product' => 6,
+    'number-shop' => 8,
+    'status' => ['status', 'on-sell', 'out-off'],
 ];

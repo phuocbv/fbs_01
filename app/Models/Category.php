@@ -34,7 +34,7 @@ class Category extends BaseModel
 
     public function products()
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Product::class)->orderBy('created_at', 'desc')->with('images');
     }
 
     public function shops()
@@ -48,8 +48,29 @@ class Category extends BaseModel
             ->where('sort', '<>', 0)->orderBy('sort', 'asc');
     }
 
-    public function category()
+    public function parent()
     {
         return $this->belongsTo(Category::class, 'parent_id');
+    }
+
+    public function productsThrough($take = null)
+    {
+        $result = $this->hasManyThrough( Product::class, Category::class,
+            'parent_id', 'category_id')->orderBy('created_at', 'desc');
+
+        switch ($take) {
+            case 'all':
+                return $result;
+            case null:
+                return $result->limit(config('view.take-product'));
+            default:
+                return $result->limit($take);
+        }
+    }
+
+    public function allProductsByCate()
+    {
+        return $result = $this->hasManyThrough( Product::class, Category::class,
+            'parent_id', 'category_id')->orderBy('created_at', 'desc')->with('images');
     }
 }

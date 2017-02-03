@@ -24,7 +24,10 @@ class ShopController extends Controller
 
     public function create()
     {
-        $categories = $this->categoryRepository->getParents();
+        if (count($this->shopRepository->findByField('user_id', Auth::user()->id)) > 0) {
+            return redirect()->to('/');
+        }
+        $categories = $this->categoryRepository->findWhere(['parent_id' => null], ['name', 'id']);
 
         return view('user.shop.create-shop', compact('categories'));
     }
@@ -36,5 +39,23 @@ class ShopController extends Controller
         $data['user_id'] = Auth::user()->id;
 
         return $this->shopRepository->create($data);
+    }
+
+    public function show($id)
+    {
+        $shop = $this->shopRepository->find($id);
+
+        return view('user.shop.show-shop', compact('shop'));
+    }
+
+    public function showShopOfUser()
+    {
+        if (Auth::user()) {
+            $data['shop'] = $this->shopRepository->findByField('user_id', Auth::id())->first();
+
+            return view('seller-chanel.listProducts', $data);
+        }
+
+        return redirect()->route('/');
     }
 }

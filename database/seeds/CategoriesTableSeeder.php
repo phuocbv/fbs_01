@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class CategorySeeder extends Seeder
+class CategoriesTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -11,22 +11,37 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
+        $faker = Faker\Factory::create();
+
         $category = [
-            'Suc khoe & sac dep',
-            'Thoi trang',
-            'Dien thoai & phu kien',
-            'Thiet bi dien tu',
-            'Me & be',
-            'Thiet bi dien gia dung',
-            'Nha cua & Doi song',
-            'Giay dep',
-            'Tui vi',
+            'Sức khỏe & Sắc đẹp',
+            'Thời trang',
+            'Điện thoại & Phụ kiện',
+            'Thiết bị điện tử',
+            'Mẹ & Bé',
+            'Thiết bị điện gia dụng',
+            'Nhà cửa & Đời sống',
+            'Giầy dép',
+            'Túi ví',
         ];
 
         for ($i = 0; $i < count($category); $i++) { 
             DB::table('categories')->insert([
                 'name' => $category[$i],
+                'image' => $faker->imageUrl(500, 500),
+                'sort' => 1,
             ]);
+        }
+
+        for ($i = 0; $i < count($category); $i++) {
+            for ($j = 0; $j < 9; $j++) {
+                DB::table('categories')->insert([
+                    'name' => rtrim($faker->text(30), '.'),
+                    'image' => $faker->imageUrl(500, 500),
+                    'sort' => 1,
+                    'parent_id' => $i + 1,
+                ]);
+            } 
         }
     }
 }

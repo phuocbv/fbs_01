@@ -8,9 +8,12 @@ return [
     'sort' => 'Sort',
     'list' => 'List :name',
     'sort' => 'Sort',
-    'success' => 'Success',
+    'success' => 'success',
     'sub_category' => 'Sub Category',
+    'parent_category' => 'Parent Category',
     'sub' => 'Sub',
+    'users' => 'Users',
+    'categories' => 'Categories',
 
     'message' => [
         'holder' => '-- Please Select :name',
@@ -26,9 +29,10 @@ return [
     ],
 
     'label' => [
-        'index' => 'Index',
+        'index' => 'ID',
         'edit' => 'Edit',
-        'delete' => 'Delete'
+        'delete' => 'Delete',
+        'action' => 'Action'
     ],
 
     'user' => [

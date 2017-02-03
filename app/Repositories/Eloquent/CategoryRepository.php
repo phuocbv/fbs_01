@@ -30,11 +30,13 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
     {
         if ($this->validate($data, 'create')) {
             $this->model->create($data);
-            return redirect()->route('category.index')->with([
+            
+            return redirect()->route('admin.category.index')->with([
                 'flash_level' => Lang::get('admin.success'),
                 'flash_message' => Lang::get('admin.message.add_success', ['name' => 'Category'])
             ]);
         }
+        
         return redirect()->back()->withErrors($this->model->valid());
     }
 
@@ -53,5 +55,24 @@ class CategoryRepository extends BaseRepository implements CategoryRepositoryInt
         return $this->model->where('sort', '<>', 0)
             ->where('parent_id', null)
             ->orderBy('sort', 'asc')->take($take)->get();
+    }
+
+    public function getProducts($id, $from, $to)
+    {
+        $category = $this->model->find($id);
+        if (!$category) {
+            return null;
+        }
+        if ($category->parent_id) {
+            $products = $category->products
+                ->where('price', '<=', $to)
+                ->where('price', '>=', $from);  
+        } else {
+            $products = $category->allProductsByCate
+                ->where('price', '<=', $to)
+                ->where('price', '>=', $from);
+        }
+
+        return $products;
     }
 }

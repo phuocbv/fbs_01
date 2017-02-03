@@ -28,4 +28,25 @@ class MyFuncs
             $message->subject($content['subject']);
         });
     }
+
+    public static function getListProduct($categoryShow)
+    {
+        $listProduct = null;
+        if ($categoryShow->parent_id == null) {
+            $listProduct = $categoryShow->allProductsByCate;
+        } else {
+            $listProduct = $categoryShow->products;
+        }
+
+        return $listProduct;
+    }
+
+    public static function getDiscount($priceProduct, $discount)
+    {
+        if ($discount > 0) {
+            $priceProduct *= (1 - $discount / 100);
+        }
+
+        return round($priceProduct, -3);
+    }
 }

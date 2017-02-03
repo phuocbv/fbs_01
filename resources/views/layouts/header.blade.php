@@ -8,6 +8,7 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="{{ url('/') }}">@lang('header.home')</a>
+            <a class="navbar-brand" href="{{ route('shop.index') }}">@lang('shop.list-shop')</a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
@@ -15,6 +16,7 @@
                     <li><a class="shop-name" href="{{ url('/login') }}">@lang('login.login')</a></li>
                     <li><a class="shop-name" href="{{ url('/register') }}">@lang('register.register')</a></li>
                 @else
+                <li><a href="{{ route('user.cart.index') }}">@lang('user.cart.title')</a></li>
                 <li class="dropdown">
                     <li class="dropdown">
                         <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -22,7 +24,20 @@
                         </a>
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="{{ route('users.edit', Auth::user()) }}"><i class="fa fa-btn fa-edit">
-                             @lang('header.profile')</i></a></li>
+                            @lang('header.profile')</i></a></li>
+                            <li><a href="{{ route('user.bill.index')}}"><i class="fa fa-btn fa-info-circle">
+                            @lang('header.bill')</i></a></li>
+                            @if (Auth::user()->shop)
+                                <li><a href="{{ route('user.shop.show', Auth::user()->shop->id) }}">
+                                    <i class="fa fa-btn fa-shopping-bag">
+                                    @lang('header.manage_shop')</i></a>
+                                </li>
+                            @else
+                                <li><a href="{{ route('user.shop.create') }}">
+                                <i class="fa fa-btn fa-shopping-bag">
+                                    @lang('header.create_shop')</i></a>
+                                </li>
+                            @endif
                             <li><a id="logout" href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i> @lang('header.logout')</a> 
                                 <form id="logout-form" action="{{ url('/logout') }}" method="POST">
                                     {{ csrf_field() }}
@@ -36,24 +51,3 @@
         </div>   
     </div>
 </nav>
-<div class='container'>
-    <div class="head-top col-md-12 col-sm-12 col-xs-12">
-        <div class="col-md-8 col-sm-8 col-xs-8">
-            <a href="" class="img-responsive">
-                <img src="{{ asset('images/logo.png') }}">
-            </a>
-        </div>
-        <div class="col-md-4 col-sm-4 col-xs-4">
-            <form class="header-search col-md-12 col-sm-12 col-xs-12">
-                <div class="input-group">
-                    <input type="text" class="form-control search" placeholder="Search">
-                    <div class="input-group-btn">
-                        <button class="btn btn-default" type="submit">
-                            <i class="glyphicon glyphicon-search"></i>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
