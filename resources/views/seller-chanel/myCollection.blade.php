@@ -66,14 +66,37 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="editCollection" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@lang('collection.edit-collection')</h4>
+                </div>
+                <div class="modal-body">     
+                    <div class="form-group">
+                        <label for="name">@lang('collection.collection-name')</label>
+                        {!! Form::input('text', 'name', null, 
+                            ['class' => 'form-control', 'placeholder' => Lang::get('collection.collection-name'), 'id' => 'nameCollectionEdit']) !!}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">@lang('collection.close')</button>
+                    <button type="button" class="btn btn-primary" id="btn-edit">@lang('collection.edit-collection')</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<script src="{{ asset('/bower_components/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('bower_components/blockUI/jquery.blockUI.js') }}"></script>
 <script src="{!! asset('seller/js/collection.js') !!}"></script>
 <script type="text/javascript">
     var collection = new collection;
     collection.init({
         items: {{ count($sum) }},
         itemsOnPage: {{ config('view.panigate-10') }},
+        imageAwait: '{{ asset('images/load.gif') }}',
     });
 </script>
 @stop

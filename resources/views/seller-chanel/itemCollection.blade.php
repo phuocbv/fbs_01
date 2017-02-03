@@ -1,20 +1,11 @@
 @foreach($collections as $key => $collection)
-    <tr>
+    <tr class="odd">
         <td class="colum">{!! ($page == null ? 0 : ($page - 1) ) * config('view.panigate-10') + $key + 1 !!}</td>
-        <td class="colum"><a href="{{ route('user.collection.show', $collection) }}" id="collection-{{ $collection->id }}">{!! $collection->name !!}</a></td>
+        <td class="colum name"><a href="{{ route('user.collection.show', $collection) }}" id="collection-{{ $collection->id }}" class="name">
+            {!! $collection->name !!}</a></td>
         <td class="colum">{{ count($collection->products) }}</td>
-        <td class="colum"><i class="fa fa-pencil fa-fw"></i>
-            <a href="javascript:void(0)" data-toggle="modal" data-target=".bs-example-modal-lg" data-id="{{ $collection->id }}" data-name="" class="update">
-                @lang('user.edit')
-            </a>
-        </td>
-        <td class="colum"><i class="fa fa-trash-o fa-fw"></i>
-            <a href="javascript:void(0)" 
-                data-id="{!! $collection->id !!}" 
-                value="{!! $collection->id !!}" 
-                class="delete">
-                @lang('user.delete')
-            </a>
-        </td>
+        <td class="colum"><i class="fa fa-pencil fa-fw" id="edit-collection" data-id="{{ $collection->id }}"
+            data-toggle="modal" data-target="#editCollection"></i></td>
+        <td class="colum"><i class="fa fa-trash-o fa-fw" id="delete-collection" data-id="{{ $collection->id }}"></i></td>
     </tr>
 @endforeach

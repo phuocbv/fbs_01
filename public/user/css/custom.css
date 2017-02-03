@@ -145,6 +145,11 @@ ol, ul {
     box-shadow: 0 2px .1rem 0 rgba(0,0,0,.13);
 }
 
+.blockUI.blockMsg.blockPage {
+    border: none !important;
+    background-color: rgba(255, 255, 255, 0) !important;
+}
+
 .cart_info div {
     float: right; 
     margin-right: 100px;
@@ -166,4 +171,8 @@ ol, ul {
 
 .edit-collection {
     margin: 20px 30px;
+}
+
+.fa.fa-fw {
+    cursor: pointer;
 }

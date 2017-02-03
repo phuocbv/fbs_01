@@ -111,6 +111,62 @@ class CollectionController extends Controller
         return view('user.collection.show', compact('collection', 'shop'));
     }
 
+    public function edit(Request $request, $id)
+    {
+        $data['collection'] = $this->collectionRepository->find($id);
+        if ($request->ajax()) {
+            if ($data['collection']) {
+                return response()->json(['status' => 'success',
+                    'data' => $data['collection']->toArray()]);
+            }
+        }
+
+        return response()->json(['status' => 'error']);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $data = $request->only('name');
+        $collection = $this->collectionRepository->find($id);
+        if ($request->ajax()) {
+            if ($collection) {
+                try {
+                    $this->collectionValidator->setId($id);
+                    if ($this->collectionValidator->with($data)->passesOrFail(ValidatorInterface::RULE_UPDATE)) {
+                        return response()->json($this->collectionRepository->updateCollection($id, $data));
+                    }
+                } catch (ValidatorException $e) {
+                    return response()->json([
+                        'status' => 'validator',
+                        'message' => $e->getMessageBag()
+                    ]);
+                }
+            }
+        }
+
+        return response()->json(['status' => 'error']);
+    }
+
+    public function destroy($id)
+    {
+        $collection = $this->collectionRepository->find($id);
+        if ($collection) {
+            try {
+                DB::beginTransaction();
+                if ($this->collectionRepository->delete($id)) {
+                    DB::commit();
+
+                    return response()->json(['status' => 'success']);
+                }
+                DB::rollback();
+            } catch (Exception $e) {
+                DB::rollback();
+            }
+        }
+
+        return response()->json(['status' => 'error']);
+    }
+
     public function addProduct(Request $request)
     {
         $data = $request->only('product_id', 'collection_id');

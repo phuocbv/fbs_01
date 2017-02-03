@@ -5,6 +5,10 @@ namespace App\Repositories\Eloquent;
 use App\Repositories\Contracts\CollectionRepositoryInterface;
 use Prettus\Repository\Eloquent\BaseRepository;
 use App\Models\Collection;
+use App\CollectionValidator;
+use Illuminate\Support\Facades\DB;
+use Prettus\Validator\Exceptions\ValidatorException;
+use Prettus\Validator\Contracts\ValidatorInterface;
 use Lang;
 
 class CollectionRepository extends BaseRepository implements CollectionRepositoryInterface
@@ -46,5 +50,22 @@ class CollectionRepository extends BaseRepository implements CollectionRepositor
         }
 
         return $data;
+    }
+
+    public function updateCollection($id, $data)
+    {
+        try {
+            DB::beginTransaction();
+            if ($this->model->find($id)->update($data)) {
+                DB::commit();
+
+                return ['status' => 'success', 'data' => $data];
+            }
+            DB::rollback();
+        } catch (Exception $e) {
+            DB::rollback();
+        }
+
+        return ['status' => 'no-success'];
     }
 }

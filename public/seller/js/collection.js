@@ -8,9 +8,14 @@ var collection = function() {
         itemsOnPage: null,
     }
 
+    this.imageAwait = null;
+
+    this.elementSelected = null;
+
     this.init = function(data) {
         this.dataPage.items = data.items;
         this.dataPage.itemsOnPage = data.itemsOnPage;
+        this.imageAwait = data.imageAwait;
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -39,6 +44,27 @@ var collection = function() {
                 current.loadCollection(pageNumber);
             }
         });
+        $(document).on('click', '.fa.fa-pencil#edit-collection', function(event) {
+            $.blockUI({ message: '<img src="' + current.imageAwait + '"/>' });
+            $idCollection = $(this).data('id');
+            $('#editCollection #btn-edit').attr('data-id', $idCollection);
+            current.getCollection($idCollection);
+            current.elementSelected = this;
+        });
+        $(document).on('click', '#editCollection #btn-edit', function(event) {
+            var name = $('#nameCollectionEdit').val();
+            if (name) {
+                current.updateCollection($(this).data('id'), { name: name },
+                    current.informUpdate, current.elementSelected);
+            } else {
+                alert('Empty');
+            }
+        });
+        $(document).on('click', '.fa.fa-trash-o#delete-collection', function(event) {
+            if (confirm('Delete')) {
+                current.deleteCollection($(this).data('id'), current.informDelete);
+            }
+        });
     }
 
     this.addMyCollection = function(data, callback) {
@@ -52,6 +78,27 @@ var collection = function() {
         })
         .fail(function() {
             alert('error');
+        });
+    }
+
+    this.updateCollection =function(id, data, callback, element) {
+        $.ajax({
+            url: '/user/collection/' + id,
+            type: 'PATCH',
+            data: data,
+        })
+        .done(function(data) {
+            callback(data, element);
+        });
+    }
+
+    this.deleteCollection = function(id, callback) {
+         $.ajax({
+            url: '/user/collection/' + id,
+            type: 'DELETE',
+        })
+        .done(function(data) {
+            callback(data);
         });
     }
 
@@ -86,5 +133,60 @@ var collection = function() {
                 alert(str);
                 break;
         }
+    }
+
+    this.informUpdate = function(data, select) {
+        switch (data.status) {
+            case 'success':
+                $('.modal#editCollection').modal('hide');
+                $parent = $(select).parentsUntil('class', '.odd');
+                $parent.children('td.name').children('a.name').html(data.data.name);
+                break;
+            case 'validator':
+                var str = '';
+                for (var key in data.message) {
+                    str += key + ": " + data.message[key];
+                }
+                alert(str);
+                break;
+            default :
+                alert(data.status);
+        }
+    }
+
+    this.informDelete = function(data) {
+        switch (data.status) {
+            case 'success':
+                window.location.reload();
+                break;
+            case 'validator':
+                var str = '';
+                for (var key in data.message) {
+                    str += key + ": " + data.message[key];
+                }
+                alert(str);
+                break;
+            default :
+                alert(data.status);
+        }
+    }
+
+    this.getCollection = function(id) {
+        $.ajax({
+            url: '/user/collection/' + id + '/edit',
+            type: 'GET',
+        })
+        .done(function(data) {
+            switch (data.status) {
+                case 'error':
+                    alert(data.status);
+                    break;
+                case 'success':
+                    $('#nameCollectionEdit').val(data.data['name']);
+                    $.unblockUI();
+                    $('.modal#editCollection').modal('show');
+                    break;
+            }
+        });
     }
 }

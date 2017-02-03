@@ -14,7 +14,6 @@ class CollectionValidator extends LaravelValidator
         ],
         ValidatorInterface::RULE_UPDATE => [
             'name' => 'required|max:50|unique:collections,name',
-            'shop_id' => 'required|exists:shops,id',
         ],
     ];
 }
